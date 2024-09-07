@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0yrxjz5" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.22.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
+  <bpmn:process id="Process_1qakwqp" name="Resetting reactions of video" isExecutable="true" camunda:historyTimeToLive="P5D">
+    <bpmn:startEvent id="StartEvent_1" name="Обнуление реакций к видео">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="videoId" label="ID видео" type="long">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1yyibgp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1yyibgp" sourceRef="StartEvent_1" targetRef="Activity_1bd6337" />
+    <bpmn:serviceTask id="Activity_1bd6337" name="Обнулить счетчик реакций к видео" camunda:type="external" camunda:topic="reset-reactions-on-video">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="reactionIds">${reactionIds}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1yyibgp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0d4avq9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_1cjaqyw" attachedToRef="Activity_1bd6337">
+      <bpmn:outgoing>Flow_02orpzq</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0spqiec" />
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="Event_04z1axg">
+      <bpmn:incoming>Flow_02orpzq</bpmn:incoming>
+      <bpmn:incoming>Flow_0chkd49</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_02orpzq" sourceRef="Event_1cjaqyw" targetRef="Event_04z1axg" />
+    <bpmn:sequenceFlow id="Flow_0d4avq9" sourceRef="Activity_1bd6337" targetRef="Activity_1hhcrz0" />
+    <bpmn:serviceTask id="Activity_1hhcrz0" name="Удалить реакции из БД" camunda:type="external" camunda:topic="delete-reactions">
+      <bpmn:incoming>Flow_0d4avq9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tegb4a</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_0guo5hb">
+      <bpmn:incoming>Flow_0tegb4a</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0chkd49" sourceRef="Activity_1uetca6" targetRef="Event_04z1axg" />
+    <bpmn:serviceTask id="Activity_1uetca6" name="Восстановить счетчик реакций к видео" camunda:type="external" camunda:topic="restore-reactions-on-video">
+      <bpmn:incoming>Flow_0y4frae</bpmn:incoming>
+      <bpmn:outgoing>Flow_0chkd49</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="Event_0wj966c" attachedToRef="Activity_1hhcrz0">
+      <bpmn:outgoing>Flow_0y4frae</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_1f1pbnr" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0y4frae" sourceRef="Event_0wj966c" targetRef="Activity_1uetca6" />
+    <bpmn:sequenceFlow id="Flow_0tegb4a" sourceRef="Activity_1hhcrz0" targetRef="Event_0guo5hb" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1qakwqp">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="155" y="142" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yab5tl_di" bpmnElement="Activity_1bd6337">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04z1axg_di" bpmnElement="Event_04z1axg">
+        <dc:Bounds x="242" y="212" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ay32xo_di" bpmnElement="Activity_1hhcrz0">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0guo5hb_di" bpmnElement="Event_0guo5hb">
+        <dc:Bounds x="592" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0bzdxts_di" bpmnElement="Activity_1uetca6">
+        <dc:Bounds x="330" y="190" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_1iup8ty" bpmnElement="Event_0wj966c">
+        <dc:Bounds x="442" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1cjaqyw_di" bpmnElement="Event_1cjaqyw">
+        <dc:Bounds x="282" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1yyibgp_di" bpmnElement="Flow_1yyibgp">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02orpzq_di" bpmnElement="Flow_02orpzq">
+        <di:waypoint x="300" y="175" />
+        <di:waypoint x="300" y="230" />
+        <di:waypoint x="278" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0d4avq9_di" bpmnElement="Flow_0d4avq9">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tegb4a_di" bpmnElement="Flow_0tegb4a">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="592" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0chkd49_di" bpmnElement="Flow_0chkd49">
+        <di:waypoint x="330" y="230" />
+        <di:waypoint x="278" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0y4frae_di" bpmnElement="Flow_0y4frae">
+        <di:waypoint x="460" y="175" />
+        <di:waypoint x="460" y="230" />
+        <di:waypoint x="430" y="230" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

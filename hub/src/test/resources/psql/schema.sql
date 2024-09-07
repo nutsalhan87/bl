@@ -1,0 +1,1 @@
+../../../main/resources/psql/schema.sql

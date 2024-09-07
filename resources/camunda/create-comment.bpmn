@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1l1376j" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.22.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.21.0">
+  <bpmn:process id="Process_aboba" name="Comment creating" isExecutable="true" camunda:historyTimeToLive="P5D">
+    <bpmn:sequenceFlow id="Flow_1hd2hov" sourceRef="create-comment" targetRef="Event_0posz23" />
+    <bpmn:startEvent id="Event_1qrvc2d" name="Комментирование">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="videoId" label="ID видео" type="long">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="authorName" label="Имя автора" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="text" label="Текст комментария" type="string">
+            <camunda:validation>
+              <camunda:constraint name="minlength" config="1" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_01ro7aw</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_01ro7aw" sourceRef="Event_1qrvc2d" targetRef="create-comment" />
+    <bpmn:endEvent id="Event_0posz23" name="Комментарий&#10;создан">
+      <bpmn:incoming>Flow_1hd2hov</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:dataStoreReference id="DataStoreReference_11mv4ys">
+      <bpmn:extensionElements />
+    </bpmn:dataStoreReference>
+    <bpmn:serviceTask id="create-comment" name="Сохранить в бд" camunda:type="external" camunda:topic="create-comment">
+      <bpmn:incoming>Flow_01ro7aw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hd2hov</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_01nkcnk">
+        <bpmn:targetRef>DataStoreReference_11mv4ys</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmn:error id="Error_1oxs2w5" name="Error_2e74io3" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_aboba">
+      <bpmndi:BPMNShape id="Event_1qrvc2d_di" bpmnElement="Event_1qrvc2d">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="156" y="142" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0i1gmm6_di" bpmnElement="Event_0posz23">
+        <dc:Bounds x="432" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="415" y="142" width="70" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_11mv4ys_di" bpmnElement="DataStoreReference_11mv4ys">
+        <dc:Bounds x="295" y="205" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1tu4w7v_di" bpmnElement="create-comment">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1hd2hov_di" bpmnElement="Flow_1hd2hov">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="432" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01ro7aw_di" bpmnElement="Flow_01ro7aw">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_01nkcnk_di" bpmnElement="DataOutputAssociation_01nkcnk">
+        <di:waypoint x="320" y="157" />
+        <di:waypoint x="320" y="205" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

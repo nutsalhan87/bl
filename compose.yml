@@ -1,0 +1,47 @@
+services:
+  pg:
+    image: postgres:16
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: postgres # default
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./resources/postgres.sql:/docker-entrypoint-initdb.d/init.sql
+
+  zookeeper:
+    image: bitnami/zookeeper
+    ports:
+      - 2181:2181
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+
+  kafka:
+    image: bitnami/kafka:latest
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://127.0.0.1:9092
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+
+  jackrabbit:
+    image: sulu/jackrabbit:2.20-standalone
+    ports:
+      - 9999:8080
+
+  camunda:
+    image: camunda/camunda-bpm-platform:run-7.21.0
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_URL: jdbc:postgresql://pg:5432/hub_camunda
+    ports:
+      - 8888:8080
+    links:
+      - pg:pg
+    volumes:
+      - ./resources/camunda/empty/:/camunda/internal/example/
+      - ./resources/camunda/:/camunda/configuration/resources/
